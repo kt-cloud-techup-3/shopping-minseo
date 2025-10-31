@@ -1,2 +1,2 @@
-# shopping-minseo
-케클업 3조 개인 리포지토리
+# shopping-minseo 
+재고 관리 쇼핑몰 시스템을 구현합니다.
