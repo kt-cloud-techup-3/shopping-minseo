@@ -3,6 +3,7 @@ package com.kt.controller;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -56,7 +57,13 @@ public class AdminUserController {
 	public void update(@PathVariable Long id, @RequestBody @Valid UserUpdateRequest request) {
 		userService.update(id, request.name(), request.email(), request.mobile());
 	}
+
 	// 유저 삭제
 	// DELETE FROM MEMBER WHERE id = ?
 	// 유저 비밀번호 초기화
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void delete(@PathVariable Long id) {
+		userService.delete(id);
+	}
 }
