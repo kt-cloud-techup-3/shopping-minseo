@@ -1,10 +1,12 @@
-package com.kt.repository;
+package com.kt.repository.user;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.kt.common.CustomException;
+import com.kt.common.ErrorCode;
 import com.kt.domain.user.User;
 
 // <T, ID>
@@ -26,4 +28,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	Boolean existsByLoginIdJPQL(String loginId);
 
 	Page<User> findAllByNameContaining(String name, Pageable pageable);
+
+	default User findByIdOrThrow(Long id, ErrorCode errorCode) {
+		return findById(id).orElseThrow(() -> new CustomException(errorCode));
+	}
 }

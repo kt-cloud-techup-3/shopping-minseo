@@ -8,6 +8,7 @@ import com.kt.common.BaseEntity;
 import com.kt.domain.orderproduct.OrderProduct;
 import com.kt.domain.user.User;
 
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -21,9 +22,8 @@ import lombok.Getter;
 @Entity
 @Table(name = "orders")
 public class Order extends BaseEntity {
-	private String receiverName;
-	private String receiverAddress;
-	private String receiverMobile;
+	@Embedded
+	private Receiver receiver;
 	@Enumerated(EnumType.STRING)
 	private OrderStatus status;
 	private LocalDateTime deliveredAt;
@@ -39,6 +39,24 @@ public class Order extends BaseEntity {
 
 	@OneToMany(mappedBy = "order")
 	private List<OrderProduct> orderProducts = new ArrayList<>();
+
+	private Order(Receiver receiver, User user) {
+		this.receiver = receiver;
+		this.user = user;
+		this.deliveredAt = LocalDateTime.now().plusDays(3);
+		this.status = OrderStatus.PENDING;
+	}
+
+	public static Order create(Receiver receiver, User user) {
+		return new Order(
+			receiver,
+			user
+		);
+	}
+
+	public void mapToOrderProduct(OrderProduct orderProduct) {
+		this.orderProducts.add(orderProduct);
+	}
 
 	//하나의 오더는 여러개의 상품을 가질수있음
 	// 1:N
