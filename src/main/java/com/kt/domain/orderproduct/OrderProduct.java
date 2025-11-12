@@ -22,5 +22,11 @@ public class OrderProduct extends BaseEntity {
 	private Product product;
 
 	// 주문생성되면 오더프로덕트도 같이 생성
-
+	public static OrderProduct create(Order order, Product product, Long quantity) {
+		OrderProduct op = new OrderProduct();
+		op.order = order;
+		op.product = product;
+		op.quantity = quantity;
+		return op;
+	}
 }

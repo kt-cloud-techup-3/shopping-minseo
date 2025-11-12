@@ -46,8 +46,49 @@ public class Order extends BaseEntity {
 	// 1:N
 
 	// 주문생성
+	public static Order create(User user, String receiverName, String receiverAddress, String receiverMobile) {
+		Order order = new Order();
+		order.user = user;
+		order.receiverName = receiverName;
+		order.receiverAddress = receiverAddress;
+		order.receiverMobile = receiverMobile;
+		order.status = OrderStatus.PENDING;
+		return order;
+	}
+
+	// public void addOrderProduct(Product product, Long quantity) {
+	// 	OrderProduct orderProduct = OrderProduct.create(this, product, quantity);
+	// 	this.orderProducts.add(orderProduct);
+	// 	product.decreaseStock(quantity); // 재고 차감
+	// }
+
 	// 주문상태변경
+	public void changeStatus(OrderStatus status) {
+		this.status = status;
+	}
+
 	// 주문생성완료재고차감
+	public void completeOrder() {
+		this.status = OrderStatus.COMPLETED;
+		this.deliveredAt = LocalDateTime.now();
+	}
+
 	// 배송받는사람정보변경
+	public void updateReceiverInfo(String name, String address, String mobile) {
+		this.receiverName = name;
+		this.receiverAddress = address;
+		this.receiverMobile = mobile;
+	}
+
 	// 주문취소
+	public void cancel() {
+		if (this.status == OrderStatus.CANCELLED) {
+			throw new IllegalStateException("이미 취소된 주문입니다.");
+		}
+		this.status = OrderStatus.CANCELLED;
+		// 취소 시 재고 복원
+		for (OrderProduct op : orderProducts) {
+			op.getProduct().increaseStock(op.getQuantity());
+		}
+	}
 }
