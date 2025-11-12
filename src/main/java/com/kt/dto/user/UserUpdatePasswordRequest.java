@@ -1,7 +1,6 @@
-package com.kt.dto;
+package com.kt.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public record UserUpdatePasswordRequest(

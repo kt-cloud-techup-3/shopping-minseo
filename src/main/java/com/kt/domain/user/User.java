@@ -11,9 +11,6 @@ import com.kt.domain.order.Order;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +19,7 @@ import lombok.NoArgsConstructor;
 // 2. 굳이? 같이쓰지뭐
 @Getter
 @Entity
+@NoArgsConstructor
 public class User extends BaseEntity {
 	private String loginId;
 	private String password;
@@ -34,13 +32,14 @@ public class User extends BaseEntity {
 	private Gender gender;
 	private LocalDate birthday;
 
+	@Enumerated(EnumType.STRING)
+	private Role role;
+
 	@OneToMany(mappedBy = "user")
 	private List<Order> orders = new ArrayList<>();
 
-
-
 	public User(String loginId, String password, String name, String email, String mobile, Gender gender,
-		LocalDate birthday, LocalDateTime createdAt, LocalDateTime updatedAt) {
+		LocalDate birthday, LocalDateTime createdAt, LocalDateTime updatedAt, Role role) {
 		this.loginId = loginId;
 		this.password = password;
 		this.name = name;
@@ -50,6 +49,38 @@ public class User extends BaseEntity {
 		this.birthday = birthday;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+	}
+
+	public static User normalUser(String loginId, String password, String name, String email, String mobile,
+		Gender gender,
+		LocalDate birthday, LocalDateTime createdAt, LocalDateTime updatedAt) {
+		return new User(
+			loginId,
+			password,
+			name,
+			email,
+			mobile,
+			gender,
+			birthday,
+			createdAt,
+			updatedAt,
+			Role.USER
+		);
+	}
+
+	public static User admin(String loginId, String password, String name, String email, String mobile, Gender gender,
+		LocalDate birthday, LocalDateTime createdAt, LocalDateTime updatedAt) {
+		return User.admin(
+			loginId,
+			password,
+			name,
+			email,
+			mobile,
+			gender,
+			birthday,
+			createdAt,
+			updatedAt
+		);
 	}
 
 	public void changePassword(String password) {

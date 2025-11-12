@@ -11,25 +11,63 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Product extends BaseEntity {
 	private String name;
 	private Long price;
 	private Long stock;
 	@Enumerated(EnumType.STRING)
-	private ProductStatus status;
+	private ProductStatus status = ProductStatus.ACTIVATED;
 
 	@OneToMany(mappedBy = "product")
 	private List<OrderProduct> orderProducts = new ArrayList<>();
 
-	//생성
-	//수정
-	//삭제
-	//조회(리스트, 단건)
-	//상태변경
-	//재고수량감소
-	//재고수량증가
+	public Product(String name, Long price, Long stock) {
+		this.name = name;
+		this.price = price;
+		this.stock = stock;
+	}
 
+	public void update(String name, Long price, Long stock) {
+		this.name = name;
+		this.price = price;
+		this.stock = stock;
+	}
+
+	public void soldOut() {
+		this.status = ProductStatus.SOLD_OUT;
+	}
+
+	public void inActivate() {
+		this.status = ProductStatus.IN_ACTIVATED;
+	}
+
+	public void activate() {
+		this.status = ProductStatus.ACTIVATED;
+	}
+
+	public void delete() {
+		// 논리삭제
+		this.status = ProductStatus.DELETED;
+	}
+
+	public void decreaseStock(Long quantity) {
+		this.stock -= quantity;
+	}
+
+	public void increaseStock(Long quantity) {
+		this.stock += quantity;
+	}
+
+	public boolean canProvide(Long quantity) {
+		return this.stock >= quantity;
+	}
+
+	public void mapToOrderProduct(OrderProduct orderProduct) {
+		this.orderProducts.add(orderProduct);
+	}
 }
