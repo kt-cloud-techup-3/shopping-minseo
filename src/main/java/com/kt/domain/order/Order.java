@@ -17,10 +17,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "orders")
+@NoArgsConstructor
 public class Order extends BaseEntity {
 	@Embedded
 	private Receiver receiver;
@@ -54,8 +56,11 @@ public class Order extends BaseEntity {
 		);
 	}
 
-	public void mapToOrderProduct(OrderProduct orderProduct) {
-		this.orderProducts.add(orderProduct);
+	// 주문생성
+	public static Order create(User user, String receiverName, String receiverAddress, String receiverMobile) {
+		// Receiver 객체를 생성하여 주문 엔티티의 Private 생성자에 전달.
+		Receiver receiver = new Receiver(receiverName, receiverAddress, receiverMobile);
+		return new Order(receiver, user);
 	}
 
 	//하나의 오더는 여러개의 상품을 가질수있음
@@ -63,15 +68,8 @@ public class Order extends BaseEntity {
 	//하나의 상품은 여러개의 오더를 가질수있음
 	// 1:N
 
-	// 주문생성
-	public static Order create(User user, String receiverName, String receiverAddress, String receiverMobile) {
-		Order order = new Order();
-		order.user = user;
-		order.receiverName = receiverName;
-		order.receiverAddress = receiverAddress;
-		order.receiverMobile = receiverMobile;
-		order.status = OrderStatus.PENDING;
-		return order;
+	public void mapToOrderProduct(OrderProduct orderProduct) {
+		this.orderProducts.add(orderProduct);
 	}
 
 	// public void addOrderProduct(Product product, Long quantity) {
@@ -93,9 +91,9 @@ public class Order extends BaseEntity {
 
 	// 배송받는사람정보변경
 	public void updateReceiverInfo(String name, String address, String mobile) {
-		this.receiverName = name;
-		this.receiverAddress = address;
-		this.receiverMobile = mobile;
+		// receiver 객체의 필드에 직접 접근하는 대신, Receiver 객체 내부의 update 메서드를 호출해야 합니다.
+		// *Receiver 클래스에 update 메서드가 없으므로, Receiver 클래스도 수정해야 합니다.
+		this.receiver.update(name, address, mobile);
 	}
 
 	// 주문취소
