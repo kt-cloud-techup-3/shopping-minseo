@@ -17,10 +17,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
 @Table(name = "orders")
+@NoArgsConstructor
 public class Order extends BaseEntity {
 	@Embedded
 	private Receiver receiver;
