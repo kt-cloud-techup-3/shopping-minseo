@@ -19,8 +19,19 @@ spring:
         jdbc:
           time_zone: Asia/Seoul
         show_sql: true #로컬에서만
+    #        default_batch_fetch_size: 2
     show-sql: true
   data:
     redis:
       host: ${redis.host:localhost}
       port: ${redis.port:6379}
+
+jwt:
+  secret: ${kt.jwt.secret:1234567890123456789012345678901234} #32자 이상
+  access-token-expiration: ${kt.jwt.access-token-expiration:300000} #5분
+  refresh-token-expiration: ${kt.jwt.refresh-token-expiration:43200000} #12시간
+
+
+slack:
+  bot-token: ${slack.token:1234}
+  log-channel: ${slack.channel:1234}

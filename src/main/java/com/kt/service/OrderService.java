@@ -1,13 +1,13 @@
 package com.kt.service;
 
-import org.redisson.api.RedissonClient;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kt.common.ErrorCode;
-import com.kt.common.Lock;
-import com.kt.common.Preconditions;
+import com.kt.common.exception.ErrorCode;
+import com.kt.common.support.Lock;
+import com.kt.common.support.Message;
+import com.kt.common.support.Preconditions;
 import com.kt.domain.order.Order;
 import com.kt.domain.order.Receiver;
 import com.kt.domain.orderproduct.OrderProduct;
@@ -22,12 +22,11 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 @RequiredArgsConstructor
 public class OrderService {
-	private final RedisProperties redisProperties;
 	private final UserRepository userRepository;
 	private final ProductRepository productRepository;
 	private final OrderRepository orderRepository;
 	private final OrderProductRepository orderProductRepository;
-	private final RedissonClient redissonClient;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
 	// reference , primitive
 	// 선택하는 기준 1번째 : null 가능?
@@ -66,5 +65,11 @@ public class OrderService {
 
 		product.mapToOrderProduct(orderProduct);
 		order.mapToOrderProduct(orderProduct);
+
+		// 슬랙에다가 궁금하니까 누가 얼마 주문했나 알림 받고싶음
+		// 저수준 모듈이 고수준 모듈을 의존하는(아는) 문제 발생
+		applicationEventPublisher.publishEvent(
+			new Message("User: " + user.getName() + " ordered :" + quantity * product.getPrice())
+		);
 	}
 }

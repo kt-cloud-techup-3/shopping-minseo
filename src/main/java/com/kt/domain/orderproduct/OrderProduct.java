@@ -1,6 +1,6 @@
 package com.kt.domain.orderproduct;
 
-import com.kt.common.BaseEntity;
+import com.kt.common.support.BaseEntity;
 import com.kt.domain.order.Order;
 import com.kt.domain.product.Product;
 
@@ -17,8 +17,10 @@ public class OrderProduct extends BaseEntity {
 	private Long quantity;
 
 	@ManyToOne
+	// @JoinColumn(name = "order_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
 	@JoinColumn(name = "order_id")
 	private Order order;
+
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
