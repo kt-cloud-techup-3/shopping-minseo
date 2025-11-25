@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kt.common.BaseEntity;
+import com.kt.common.support.BaseEntity;
 import com.kt.domain.orderproduct.OrderProduct;
 import com.kt.domain.user.User;
 
@@ -40,6 +40,7 @@ public class Order extends BaseEntity {
 	private User user;
 
 	@OneToMany(mappedBy = "order")
+	// @BatchSize(size = 2)
 	private List<OrderProduct> orderProducts = new ArrayList<>();
 
 	private Order(Receiver receiver, User user) {
